@@ -1,0 +1,13 @@
+
+page{
+	background-color: #FFFFFF;
+	height: 100vh;
+}
+.logobtn{
+	width: 650rpx;
+	height: 88rpx;
+	margin: 0 50rpx;
+	position: fixed;
+	bottom: 180rpx;
+}
+

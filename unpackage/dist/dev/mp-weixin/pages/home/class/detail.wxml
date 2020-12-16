@@ -1,0 +1,1 @@
+<view><cu-custom vue-id="2e1b1a17-1" bgColor="bg-green" isBack="{{true}}" showBackImg="{{true}}" bind:__l="__l" vue-slots="{{['backText']}}"><view slot="backText">苗木课堂</view></cu-custom></view>

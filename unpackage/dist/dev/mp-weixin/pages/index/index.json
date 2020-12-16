@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "uni-app",
+  "usingComponents": {
+    "tui-scroll-top": "/components/tui-scroll-top/tui-scroll-top"
+  }
+}

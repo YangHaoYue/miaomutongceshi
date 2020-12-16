@@ -1,0 +1,28 @@
+
+page{
+	background-color: #FFFFFF;
+	height: 100vh;
+}
+.Tabcur{
+	border-bottom: solid #00913A 4rpx;
+}
+.showMadol{
+	height: 497rpx;
+	width:100%;
+	position: fixed;
+	bottom: calc(120rpx + env(safe-area-inset-bottom) / 2);
+	z-index: 999;
+}
+.showMadol::after {
+	content: '';
+	position: absolute;
+	width: 0;
+	height: 0;
+	border-top: solid 6px #FFFFFF;
+	border-right: solid 6px transparent;
+	border-left: solid 6px transparent;
+	left: 50%;
+	bottom: -6px;
+	margin-left: -6px;
+}
+

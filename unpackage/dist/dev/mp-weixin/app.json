@@ -1,0 +1,51 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/home/home",
+    "pages/mine/mine",
+    "pages/home/search/search",
+    "pages/mine/authentication/authentication",
+    "pages/mine/authentication/shimin",
+    "pages/mine/authentication/qiye",
+    "pages/mine/myCollection/myCollection",
+    "pages/mine/authentication/success",
+    "pages/mine/myStore/myStore",
+    "pages/home/gongying/gongying",
+    "pages/home/gongying/screen",
+    "pages/home/gongying/detail",
+    "pages/release/release",
+    "pages/release/faGongYing",
+    "pages/release/faQiuGou",
+    "pages/release/GYscreen",
+    "pages/release/QGscreen",
+    "pages/home/class/class",
+    "pages/home/class/detail",
+    "pages/home/offer/offer",
+    "pages/home/gongying/purchase/purchase",
+    "pages/home/gongying/purchase/locationList",
+    "pages/home/gongying/purchase/addLocation",
+    "pages/mine/myWallet/myWallet",
+    "pages/mine/myWallet/cash",
+    "pages/mine/myWallet/detail",
+    "pages/mine/myWallet/information",
+    "pages/mine/supply/supply",
+    "pages/mine/QiuGou/QiuGou",
+    "pages/mine/myOrders/myOrders",
+    "pages/mine/QiuGou/detail",
+    "pages/mine/QiuGou/offerList",
+    "pages/home/gongying/storeShop"
+  ],
+  "subPackages": [],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8",
+    "navigationStyle": "custom"
+  },
+  "usingComponents": {
+    "home": "/pages/home/home",
+    "mine": "/pages/mine/mine",
+    "cu-custom": "/colorui/components/cu-custom"
+  }
+}

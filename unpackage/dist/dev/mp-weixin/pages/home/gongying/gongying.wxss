@@ -1,0 +1,17 @@
+
+.float_fabu.data-v-f1000110{
+	position: fixed;
+	bottom: 120rpx;
+	right: 50rpx;
+	height: 100rpx;
+	width: 100rpx;
+	background-color: #00913A;
+	color: #FFFFFF;
+	-webkit-box-shadow:2px 2px 3px gray;
+	        box-shadow:2px 2px 3px gray;
+}
+.bg-nomal.data-v-f1000110{
+	background-color: #F7F7F7;
+	color: #A9A9A9;
+}
+
