@@ -18,11 +18,11 @@
 			<view class="cu-list menu-avatar margin-top">
 				<view class="item bg-white flex justify-between" v-for="(item,index) in list" :key="index">
 					<view class="Profitcontent">
-						<view class="text-black"><view class="text-cut">{{item.type}}</view></view>
+						<view class="text-black"><view class="text-cut">{{item.title}}</view></view>
 						<view class="text-black text-sm flex margin-top-sm"> <view class="text-cut">{{item.time}}</view></view>
 					</view>
 					<view class="action text-right">
-						<view class="text-xs" style="font-size: 32upx;">{{item.money}}元</view>
+						<view class="text-xs" style="font-size: 32upx;">{{item.count.toFixed(2)}}元</view>
 					</view>
 				</view>
 			</view>
@@ -32,6 +32,24 @@
 
 <script>
 	export default {
+		onLoad() {
+			this.getInfo(1)
+		},
+		//下拉刷新
+		onPullDownRefresh(){
+			this.list=[];
+			this.getInfo(1);
+			uni.stopPullDownRefresh();
+		},
+		//上拉加载
+		onReachBottom() {
+			if(this.current_page<this.last_page){
+				this.current_page++;
+				this.getInfo(this.current_page);
+			}else{
+				this.http.toast('到底了！');
+			}
+		},
 		data() {
 			return {
 				scrollInto:'',
@@ -46,30 +64,34 @@
 					tabindex:2,
 					TabName:'支出'
 				}],
-				list:[{
-					type:'提现',
-					time:'2020.11.03 11:51',
-					money:'-400.00'
-				},{
-					type:'购买睡莲',
-					time:'2020.11.03 11:51',
-					money:'-200.00'
-				},{
-					type:'售卖红叶枫',
-					time:'2020.11.03 11:51',
-					money:'+400.00'
-				},{
-					type:'提现',
-					time:'2020.11.03 11:51',
-					money:'-400.00'
-				}]
+				list:[],
+				current_page:'',//当前页数
+				last_page:''//总页数
 			}
 		},
 		methods: {
+			getInfo(page){
+				this.http.get('user/getCashInfo',{
+					page:page,
+					tab:this.TabCur
+				}).then((res)=>{
+					if(res.code==1000){
+						if(this.list.length==0){
+							this.list=res.data.data;
+							this.current_page=res.data.current_page;
+							this.last_page=res.data.last_page;
+						}else{
+							this.list=this.list.concat(res.data.data)
+						}
+					}
+				})
+			},
 			/* 导航栏切换 */
 			tabSelect(item) {
 				this.TabCur=item.tabindex;
 				this.scrollInto='tab'+item.tabindex;
+				this.list=[];
+				this.getInfo(1)
 			},
 		}
 	}

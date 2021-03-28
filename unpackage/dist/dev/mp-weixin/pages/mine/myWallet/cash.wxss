@@ -57,7 +57,7 @@ page {
 }
 .cashCard .input input {
   font-size: 72rpx;
-  height: 72rpx;
+  height: 74rpx;
 }
 .cashCard .content {
   color: #999999;

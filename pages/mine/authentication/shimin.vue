@@ -72,28 +72,20 @@
 				});
 			},
 			id_card_imgsUpload(tempFilePaths,e){
-				let token=uni.getStorageSync('token');
-				uni.uploadFile({
-					url:Url.websiteUrl+'common/uploader',
-					fileType:'image',
-					filePath:tempFilePaths,
-					name:'file',
-					header: {Authorization:'Bearer ' + token},
-					success: (res) => {
-						uni.showToast({
-							icon:'none',
-							title: JSON.parse(res.data).msg
-						});
-						this.id_card_imgs[e]=JSON.parse(res.data).data
-					},
-					fail: () => {
-					}
-				});
+				this.http.uploadFile('files/fileUploader',tempFilePaths).then((res)=>{
+					this.id_card_imgs[e]=res.path;
+				})
 			},
 			ViewImage(e) {
-				uni.previewImage({
-					urls: this.imgList
-				});
+				switch (e) {
+					case 'R':
+						uni.previewImage({urls: this.RimgList});
+						break;
+					case 'G':
+						uni.previewImage({urls: this.GimgList});
+						break;
+						return;
+				}
 			},
 			DelImg(e) {
 				switch (e) {
@@ -110,39 +102,15 @@
 				}
 			},
 			apply(){
-				uni.navigateTo({
-					url: 'success',
-					success: res => {},
-					fail: () => {},
-					complete: () => {}
-				});
-				/* let token=uni.getStorageSync('token'); */
-				/* uni.request({
-					url: Url.websiteUrl+'identify/idMessage',
-					method: 'POST',
-					header: {Authorization:'Bearer ' + token},
-					data: {
-						real_name:this.name,
-						id_card:this.IDcard,
-						id_card_img:this.id_card_imgs[0],
-						id_card_back_img:this.id_card_imgs[1],
-					},
-					success: res => {
-						uni.showToast({
-							icon:'none',
-							title: res.data.msg
-						});
-						if(res.data.code==1000){
-							setTimeout(()=>{
-								uni.navigateBack({
-									delta: 1
-								});
-							},1500)
-						}
-					},
-					fail: () => {},
-					complete: () => {}
-				}); */
+				this.http.get('authenticate/setPersonAuthImg',{
+					front:this.id_card_imgs[0],
+					back:this.id_card_imgs[1]
+				}).then((res)=>{
+					if(res.code==1000){
+						this.http.toast(res.msg);
+						setTimeout(()=>{uni.navigateBack({delta: 1});},1000)
+					}
+				})
 			}
 		}
 	}
@@ -170,6 +138,7 @@
 			width: 536rpx;
 			height: 346rpx;
 			border-radius: 15rpx;
+			border: 1rpx solid #DDDDDD;
 		}
 		.cu-tag{
 			position: relative;

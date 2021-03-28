@@ -5,19 +5,19 @@
 		</cu-custom>
 		<view class="bg-gray" style="height: 20rpx;"></view>
 		<view class="flex justify-between bg-white padding-lr padding-tb-xl" @tap="writeInfo">
-			<view class="title">提现至银行卡<text class="text-gray margin-left-sm">{{bankname}}({{name}})</text></view>
+			<view class="title">提现至银行卡<text class="text-gray margin-left-sm">{{card_info.bank}}</text></view>
 			<view class="cuIcon-right nameicon"></view>
 		</view>
 		<view class="bg-gray" style="height: 20rpx;"></view>
 		
 		<view class="cashCard bg-white">
-			<view class="">可提现余额￥{{balance}}</view>
+			<view class="">总余额￥{{balance}}</view>
 			<view class="input flex align-center">
 				<view class="text">￥</view>
-				<input type="number" :maxlength="balance" placeholder="请输入提现金额" v-model="money" />
+				<input type="digit" placeholder="请输入提现金额" v-model="money" />
 			</view>
 			<view class="flex justify-between">
-				<view class="content">可提现余额￥{{balance}}(收取{{poundage}}%手续费)</view>
+				<view class="content">可提现余额￥{{can_withdraw}}(收取{{service_fee}}%手续费)</view>
 				<view class="btn" @tap="all">全部提现</view>
 			</view>
 		</view>
@@ -28,58 +28,33 @@
 <script>
 	
 	export default {
-		onLoad() {
-			/* this.getInfo(); */
-		},
 		onShow() {
-			/* this.getBankInfo(); */
+			this.getInfo();
 		},
 		data() {
 			return {
-				name:'请前去填写银行卡信息',
-				bankname:'',
+				card_info:{
+					bank:'暂未绑定银行卡',
+					id:''
+				},
 				
 				money:0,
-				balance:11,
-				poundage:0,
+				balance:0,
+				can_withdraw:0,
+				service_fee:0,
 				account:''
 			}
 		},
 		methods: {
 			getInfo(){
-				let token=uni.getStorageSync('token');
-				uni.request({
-					url: Url.websiteUrl+'user/getCashInfo',
-					method: 'POST',
-					header:{Authorization:'Bearer '+token},
-					data: {},
-					success: res => {
-						if(res.data.status_code==0){
-							this.balance=res.data.data.canCash;
-							this.poundage=res.data.data.poundage;
-						}
-					},
-					fail: () => {},
-					complete: () => {}
-				});
-			},
-			//获取银行卡信息
-			getBankInfo(){
-				let token=uni.getStorageSync('token');
-				uni.request({
-					url: Url.websiteUrl+'user/getBankInfo',
-					method: 'POST',
-					header:{Authorization:'Bearer '+token},
-					data: {},
-					success: res => {
-						if(res.data.status_code==0){
-							this.name=res.data.data.name;
-							this.bankname=res.data.data.bank_name;
-						}
-					},
-					fail: () => {},
-					complete: () => {}
-				});
+				this.http.post('withdraw/getWithdrawInfo').then((res)=>{
+					if(res.code==1000){
+						this.balance=res.data.balance;
+						this.service_fee=res.data.service_fee;
+						this.can_withdraw=res.data.can_withdraw;
+						this.card_info=res.data.card_info;
+					}
+				})
 			},
 			all(){
 				this.money=this.balance;
@@ -89,30 +64,18 @@
 				uni.navigateTo({url: 'information'});
 			},
 			toCash(){
-				let token=uni.getStorageSync('token');
-				uni.request({
-					url: Url.websiteUrl+'user/applyCash',
-					method: 'POST',
-					header:{Authorization:'Bearer '+token},
-					data: {
-						money:this.money
-					},
-					success: res => {
-						uni.showToast({
-							icon:'none',
-							title: res.data.message
-						});
-						if(res.data.status_code==0){
-							setTimeout(()=>{
-								uni.navigateBack({
-									delta: 1
-								});
-							},1500)
-						}
-					},
-					fail: () => {},
-					complete: () => {}
-				});
+				this.http.post('withdraw/startWithdraw',{
+					money:this.money,
+					bank_id:this.card_info.id
+				}).then((res)=>{
+					if(res.code==1000){
+						this.http.toast(res.msg);
+						setTimeout(()=>{uni.navigateBack({
+							delta: 1
+						});},1000)
+					}
+				})
+				
 			}
 		}
 	}
@@ -150,7 +113,7 @@
 			}
 			input{
 				font-size: 72upx;
-				height: 72upx;
+				height: 74upx;
 			}
 		}
 		.content{

@@ -36,7 +36,7 @@
 		},
 		data() {
 			return {
-				inputValue: 0
+				inputValue: 1
 			};
 		},
 		watch: {

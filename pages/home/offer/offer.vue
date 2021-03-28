@@ -3,10 +3,17 @@
 		<cu-custom bgColor="bg-green" :isBack="true" :showBackImg="true"><block slot="backText">立即报价</block></cu-custom>
 		<view class="cu-list menu-avatar">
 			<view class="cu-item">
-				<view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/img/champion/Morgana.png);"></view>
+				<view class="cu-avatar round lg">
+					<image class="cu-avatar round lg" :src="user.avatar"></image>
+				</view>
 				<view class="content">
-					<view class="text-black text-lg"><view class="text-cut">李玉龙<text class="bg-blue margin-right-xs radius margin-left-sm">企</text></view></view>
-					<view class="text-gray text-sm flex"> <view class="text-cut">正在采购120厘米六道木</view></view>
+					<view class="text-black text-lg">
+						<view class="text-cut">{{user.nickname}}
+						<text v-if="user.enterprise_auth==1" class="bg-blue margin-right-xs radius margin-left-sm" style="padding: 4rpx;">企</text>
+						<text v-if="user.person_auth==1" class="bg-green margin-right-xs radius margin-left-sm" style="padding: 4rpx;">实</text>
+						</view>
+					</view>
+					<view class="text-gray text-sm flex"> <view class="text-cut">正在采购{{breed}}</view></view>
 				</view>
 			</view>
 		</view>
@@ -18,12 +25,12 @@
 				</view>
 				<view class="flex-treble">
 					<view class="solid flex justify-center margin-bottom-sm" style="border-radius: 25rpx;">
-						<view class="flex-sub padding-tb-sm text-center solid-right" style="border-radius: 15rpx 0 0 15rpx;" :class="Cur=='上车价'?'bg-green':''" @click="Change" data-cur="上车价">上车价</view>
-						<view class="flex-sub padding-tb-sm text-center" style="border-radius:0 15rpx 15rpx 0;" :class="Cur=='到货价'?'bg-green':''" @click="Change" data-cur="到货价">到货价</view>
+						<view class="flex-sub padding-tb-sm text-center solid-right" style="border-radius: 15rpx 0 0 15rpx;" :class="Cur=='上车价'?'bg-green':''" @click="Change($event,0)" data-cur="上车价">上车价</view>
+						<view class="flex-sub padding-tb-sm text-center" style="border-radius:0 15rpx 15rpx 0;" :class="Cur=='到货价'?'bg-green':''" @click="Change($event,1)" data-cur="到货价">到货价</view>
 					</view>
 					<view class="solid flex padding-lr padding-tb-sm justify-between" style="border-radius: 25rpx;">
-						<input placeholder="请输入供货价格" />
-						<text>元/株</text>
+						<input placeholder="请输入供货价格" v-model="price" />
+						<text>{{unit}}</text>
 					</view>
 				</view>
 			</view>
@@ -50,18 +57,20 @@
 				图片上传
 			</view>
 			<view class="action">
-				添加图片或视频(最多9张)
+				添加图片(最多9张)
 			</view>
 		</view>
 		<view class="cu-form-group">
 			<view class="grid col-4 grid-square flex-sub">
-				<view class="bg-img" v-for="(item,index) in imgList" :key="index" @tap="ViewImage" :data-url="imgList[index]">
-				 <image :src="imgList[index]" mode="aspectFill"></image>
+				<view class="bg-img" v-for="(item,index) in imgList" :key="index" @tap="ViewImage(item.tempFilePath)" :data-url="imgList[index].tempFilePath">
+				 <image :src="item.tempFilePath" mode="aspectFill" v-if="item.fileType=='image'"></image>
+				 <image :src="item.thumbTempFilePath" mode="aspectFill" v-if="item.fileType=='video'"></image>
+				 <!-- <video :src="item.tempFilePath" muted :show-play-btn="false" :controls="false" objectFit="cover" v-if="item.fileType=='video'"></video> -->
 					<view class="cu-tag bg-red" @tap.stop="DelImg" :data-index="index">
 						<text class='cuIcon-close'></text>
 					</view>
 				</view>
-				<view class="solids" @tap="ChooseImage" v-if="imgList.length<9">
+				<view class="solids" @tap="chooseMedia" v-if="imgList.length<9">
 					<text class='cuIcon-cameraadd'></text>
 				</view>
 			</view>
@@ -72,53 +81,97 @@
 
 <script>
 	export default {
+		onLoad(e) {
+			this.want_id=e.want_id;
+			this.getInfo()
+		},
 		data() {
 			return {
+				user:'',
+				unit:'',
+				breed:'',
+				price:'',
 				/* 上车到货 */
 				Cur:'上车价',
-				region: [],
-				imgList:[]
+				index:0,
+				area_id:110101,
+				region: ['北京市', '北京市', '东城区'],
+				imgList:[],
+				resource:[]
 			}
 		},
 		methods: {
+			getInfo(){
+				this.http.post('want/getOfferDetail',{
+					want_id:this.want_id
+				}).then((res)=>{
+					if(res.code==1000){
+						this.user=res.data.user;
+						this.unit=res.data.unit;
+						this.breed=res.data.breed;
+					}
+				})
+			},
 			/* 选择上车到货 */
-			Change(e) {
-				if (e.currentTarget.dataset.cur == this.Cur) {
-					this.Cur = '';
-				} else {
-					this.Cur = e.currentTarget.dataset.cur;
-				}
+			Change(e,i) {
+				this.Cur = e.currentTarget.dataset.cur;
+				this.index=i;
 			},
 			/* 地址选择 */
 			RegionChange(e) {
-				console.log(e)
-				this.region = e.detail.value
+				this.region = e.detail.value;
+				this.area_id=e.detail.code[2];
 			},
-			ChooseImage() {
-				uni.chooseImage({
-					count: 4, //默认9
-					sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
-					sourceType: ['album'], //从相册选择
-					success: (res) => {
+			chooseMedia() {
+				uni.chooseMedia({
+					count: 9,
+					mediaType: ['image'],//['image','video'],
+					sourceType: ['album', 'camera'],
+					maxDuration: 10,
+					camera: 'back',
+					success:(res)=>{
 						if (this.imgList.length != 0) {
-							this.imgList = this.imgList.concat(res.tempFilePaths)
+							this.imgList = this.imgList.concat(res.tempFiles);
+							for(let item of res.tempFiles){
+								this.http.uploadFile('files/fileUploader',item.tempFilePath,item.fileType).then((res)=>{
+									this.resource.push(res.path);
+								})
+							}
 						} else {
-							this.imgList = res.tempFilePaths
+							this.imgList = res.tempFiles;
+							for(let item of res.tempFiles){
+								this.http.uploadFile('files/fileUploader',item.tempFilePath,item.fileType).then((res)=>{
+									this.resource.push(res.path);
+								})
+							}
 						}
 					}
-				});
+				})
 			},
 			ViewImage(e) {
 				uni.previewImage({
-					urls: this.imgList,
-					current: e.currentTarget.dataset.url
+					urls: [e]
 				});
 			},
 			DelImg(e) {
-				this.imgList.splice(e.currentTarget.dataset.index, 1)
+				this.imgList.splice(e.currentTarget.dataset.index, 1);
+				this.resource.splice(e.currentTarget.dataset.index, 1)
 			},
 			apply(){
-				
+				this.http.post('want/publishWantOffer',{
+					want_id:this.want_id,
+					type:this.index,
+					price:this.price,
+					area_id:this.area_id,
+					img:this.resource
+				}).then((res)=>{
+					if(res.code==1000){
+						this.http.toast(res.msg);
+						setTimeout(()=>{uni.navigateBack({
+							delta: 1
+						});},1000)
+					}
+				})
 			}
 		}
 	}

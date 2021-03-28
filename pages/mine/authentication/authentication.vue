@@ -26,17 +26,61 @@
 
 <script>
 	export default {
+		onShow() {
+			this.getAuthentication()
+		},
 		data() {
 			return {
-				
+				person:'',
+				enterprise:''
 			}
 		},
 		methods: {
-			toShi:function(){
-				uni.navigateTo({url: 'shimin'});
+			getAuthentication(){
+				this.http.get('authenticate/getAuthentication').then((res)=>{
+					if(res.code==1000){
+						this.person=res.data.person;
+						this.enterprise=res.data.enterprise;
+					}
+				})
 			},
-			toQi:function(){
-				uni.navigateTo({url: 'qiye'});
+			toShi(){
+				switch(this.person.auth){
+					case -1:
+						uni.navigateTo({url: 'shimin'});
+						break;
+					case 0:
+						this.http.toast('正在审核中...');
+						break;
+					case 1:
+						uni.navigateTo({url: 'success'});
+						break;
+					case 2:
+						this.http.toast(this.person.reason);
+						setTimeout(()=>{uni.navigateTo({url: 'shimin'});},1500)
+						break;
+					default:
+						return;
+				}
+			},
+			toQi(){
+				switch(this.enterprise.auth){
+					case -1:
+						uni.navigateTo({url: 'qiye'});
+						break;
+					case 0:
+						this.http.toast('正在审核中...');
+						break;
+					case 1:
+						uni.navigateTo({url: 'success'});
+						break;
+					case 2:
+						this.http.toast(this.enterprise.reason);
+						setTimeout(()=>{uni.navigateTo({url: 'qiye'});},1500)
+						break;
+					default:
+						return;
+				}
 			}
 		}
 	}

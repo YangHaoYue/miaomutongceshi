@@ -1,5 +1,7 @@
 {
   "navigationBarTitleText": "uni-app",
+  "enablePullDownRefresh": true,
+  "onReachBottomDistance": 50,
   "usingComponents": {
     "tui-scroll-top": "/components/tui-scroll-top/tui-scroll-top"
   }

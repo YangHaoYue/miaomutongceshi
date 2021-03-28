@@ -7,8 +7,7 @@
 	width: 100rpx;
 	background-color: #00913A;
 	color: #FFFFFF;
-	-webkit-box-shadow:2px 2px 3px gray;
-	        box-shadow:2px 2px 3px gray;
+	box-shadow:2px 2px 3px gray;
 }
 .bg-nomal.data-v-f1000110{
 	background-color: #F7F7F7;

@@ -33,7 +33,12 @@
     "pages/mine/myOrders/myOrders",
     "pages/mine/QiuGou/detail",
     "pages/mine/QiuGou/offerList",
-    "pages/home/gongying/storeShop"
+    "pages/home/gongying/storeShop",
+    "pages/home/map/map",
+    "pages/home/gongying/purchase/order",
+    "pages/mine/supply/detail",
+    "pages/mine/supply/screen",
+    "pages/mine/myOrders/QGorders"
   ],
   "subPackages": [],
   "window": {
@@ -43,9 +48,15 @@
     "backgroundColor": "#F8F8F8",
     "navigationStyle": "custom"
   },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "方便提供给用户附近商家信息"
+    }
+  },
   "usingComponents": {
     "home": "/pages/home/home",
     "mine": "/pages/mine/mine",
     "cu-custom": "/colorui/components/cu-custom"
-  }
+  },
+  "sitemapLocation": "sitemap68.json"
 }

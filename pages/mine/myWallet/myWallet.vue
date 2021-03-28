@@ -14,12 +14,22 @@
 
 <script>
 	export default {
+		onShow() {
+			this.getInfo()
+		},
 		data() {
 			return {
 				money:0.00
 			}
 		},
 		methods: {
+			getInfo(){
+				this.http.post('packet/getBalance').then((res)=>{
+					if(res.code==1000){
+						this.money=res.data.balance;
+					}
+				})
+			},
 			toCash(){
 				uni.navigateTo({url: 'cash'});
 			},

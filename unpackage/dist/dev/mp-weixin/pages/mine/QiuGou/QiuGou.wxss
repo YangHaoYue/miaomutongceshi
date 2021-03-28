@@ -11,8 +11,7 @@ page {
 	height: 88rpx;
 	position: fixed;
 	bottom: 0rpx;
-	-webkit-border-radius: 0;
-	        border-radius: 0;
+	border-radius: 0;
 	z-index: 999;
 }
 

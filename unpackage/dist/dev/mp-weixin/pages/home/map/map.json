@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "tui-loadmore": "/components/tui-loadmore/tui-loadmore"
+  }
+}

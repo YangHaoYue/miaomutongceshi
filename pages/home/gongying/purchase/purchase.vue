@@ -7,29 +7,29 @@
 		<view class="padding bg-white flex justify-between align-center padding-tb-xl" v-show="location" @click="tpLocationList">
 			<view class="text-green">
 				<text class="cuIcon-roundadd margin-right-sm" style="font-size: 36rpx;"></text>
-				添加收获地址
+				添加收货地址
 			</view>
 			<view class="cuIcon-right text-gray" style="font-size: 32rpx;"></view>
 		</view>
-		<view class="padding bg-white flex justify-between align-center  padding-tb-xl" v-show="!location">
+		<view class="padding bg-white flex justify-between align-center  padding-tb-xl" v-show="!location" @click="tpLocationList">
 			<view>
-				<view class="text-bold margin-bottom-xs">张三 1398888888</view>
-				<view class="text-gray"><text class="solid">默认</text>某某省某某市某某县</view>
+				<view class="text-bold margin-bottom-xs">{{address.receive_name}} {{address.receive_phone}}</view>
+				<view class="text-gray"><text class="text-black" v-if="address.is_default==1">【默认】</text>{{city}}{{address.address}}</view>
 			</view>
-			<view class="cuIcon-right text-gray" style="font-size: 32rpx;"></view>
+			<view class="cuIcon-right text-black" style="font-size: 32rpx;"></view>
 		</view>
 		<!-- 购买信息 -->
 		<view class="bg-white padding margin-top">
 			<view class="flex justify-between margin-tb-xs">
-				<view>钰尚园林白皮松张磊</view>
+				<view>{{storeInfo.store_name}}</view>
 				<text class="cuIcon-right"></text>
 			</view>
-			<view class="flex justify-between align-center">
-				<image src="../../../../static/logo.png" mode="aspectFill" style="width: 179rpx;height: 190rpx;"></image>
-				<view class="margin-left">
-					<view class="margin-bottom-xs">白皮松</view>
-					<view class="margin-bottom-xs">高度：450-500厘米，冠幅：250-300厘米种植状态……</view>
-					<view class="text-orange margin-bottom-xs">1000.00元/株</view>
+			<view class="flex align-center">
+				<image :src="http.resourceUrl()+storeInfo.img" mode="aspectFill" style="width: 185rpx;height: 190rpx;"></image>
+				<view class="margin-left" style="width: 460rpx;">
+					<view class="margin-bottom-xs">{{storeInfo.breed_name}}</view>
+					<view class="margin-bottom-xs">{{storeInfo.desc}}</view>
+					<view class="text-orange margin-bottom-xs">{{storeInfo.price}}</view>
 				</view>
 			</view>
 			<view class="flex justify-between margin-tb">
@@ -45,7 +45,7 @@
 				</picker>
 			</view>
 			<view class="flex align-start justify-start">
-				<view class="title">备注：</view>
+				<view class="title" style="width: 120rpx;">备注：</view>
 				<textarea maxlength="200" @input="textareaInput" placeholder="（请备注详细的采购要求，最多200字）"></textarea>
 			</view>
 			<!-- 注意事项 -->
@@ -54,7 +54,9 @@
 				<view style="text-indent:2em;">2、供应商接受订单后未按时发货给您造成损失，平台将用供</view>
 			</view>
 		</view>
-		<button class="cu-btn bg-green logobtn " @tap="apply">确认发布</button>
+		<!-- 底部导航栏Tabbar -->
+		<view class="cu-tabbar-height"></view>
+		<button class="cu-btn bg-green logobtn " @tap="order">立即购买</button>
 	</view>
 </template>
 
@@ -64,15 +66,72 @@
 		components: {
 			uniNumberBox
 		},
+		onLoad(e) {
+			var ti= new Date();
+			this.date=this.http.dateFormat("YYYY-mm-dd",ti);
+			this.supply_id=e.supply_id;
+			this.getInfo();
+		},
+		onShow() {
+			this.address_id=uni.getStorageSync('address_id');
+			if(this.address_id){
+				this.getAddress();
+			}else{
+				this.getDefaultAddress();
+			}
+		},
 		data() {
 			return {
+				supply_id:'',
+				address_id:'',
+				city:'',
 				location:true,
-				number:0,
-				date: '2018-12-25',
+				address:'',
+				
+				storeInfo:'',
+				
+				number:1,
+				date: '2021-1-1',
 				textareaValue:''
 			}
 		},
 		methods: {
+			getInfo(){
+				this.http.post('order/getReadyOrderDetail',{
+					supply_id:this.supply_id
+				}).then((res)=>{
+					if(res.code==1000){
+						this.storeInfo=res.data;
+					}
+				})
+			},
+			getDefaultAddress(){
+				this.http.post('address/getList').then((res)=>{
+					if(res.code==1000){
+						if(res.data.length!=0){
+							res.data.forEach(item=>{
+								if(item.is_default==1){
+									this.location=false;
+									this.address=item;
+									this.address_id=item.id;
+									this.city=item.area.merger_name;
+								}
+							})
+						}
+					}
+				})
+			},
+			getAddress(){
+				this.http.post('address/getAddressDetail',{
+					address_id:this.address_id
+				}).then((res)=>{
+					if(res.code==1000){
+						this.location=false;
+						this.address=res.data;
+						this.city=res.data.city;
+					}
+				})
+			},
 			/* 选择地址 */
 			tpLocationList(){
 				uni.navigateTo({url: 'locationList'});
@@ -87,6 +146,25 @@
 			},
 			textareaInput(e) {
 				this.textareaValue = e.detail.value
+			},
+			order(){
+				uni.showLoading({
+					title: '正在下单...',
+					mask: true
+				});
+				this.http.post('order/createOrder',{
+					supply_id:this.supply_id,
+					address_id:this.address_id,
+					count:this.number,
+					arrive_at:this.date,
+					memo:this.textareaValue,
+				},true).then((res)=>{
+					if(res.code==1000){
+						uni.hideLoading();
+						this.http.toast(res.msg);
+						setTimeout(()=>{uni.redirectTo({url:'order?order_id='+res.data.order_id})},1000)
+					}
+				})
 			}
 		}
 	}

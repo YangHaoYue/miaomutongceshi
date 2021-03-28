@@ -2690,10 +2690,10 @@ scroll-view.cu-steps .cu-item {
 	display: block;
 	position: absolute;
 	height: 0px;
-	width: calc(100% - 80upx);
-	border-bottom: 1px solid #ccc;
-	left: calc(0px - (100% - 80upx) / 2);
-	top: 40upx;
+	width: calc(100% - 40upx);
+	border-bottom: 3px solid #ccc;
+	left: calc(0px - (100% - 40upx) / 2);
+	top: 36upx;
 	z-index: 0;
 }
 
@@ -2717,13 +2717,13 @@ scroll-view.cu-steps .cu-item {
 }
 
 .cu-steps .cu-item::after {
-	border-bottom: 1px solid currentColor;
+	border-bottom: 3px solid currentColor;
 	width: 0px;
 	transition: all 0.3s ease-in-out 0s;
 }
 
 .cu-steps .cu-item[class*="text-"]::after {
-	width: calc(100% - 80upx);
+	width: calc(100% - 40upx);
 	color: currentColor;
 }
 
@@ -2739,7 +2739,7 @@ scroll-view.cu-steps .cu-item {
 	line-height: 40upx;
 	margin: 20upx auto;
 	font-size: 24upx;
-	border: 1px solid currentColor;
+	border: 3px solid currentColor;
 	position: relative;
 	overflow: hidden;
 }

@@ -4,208 +4,255 @@
 			<block slot="backText">选择规格</block>
 		</cu-custom>
 		<!-- 筛选条件 -->
-		<view class="bg-white flex justify-center padding align-center" v-for="(item,index) in screenList" :key="index">
-			<view class="flex-sub text-center">{{item.title}}</view>
-			<view class="flex-treble flex justify-between align-center">
-				<view class="flex-treble flex solid padding-tb-sm padding-lr-xs">
-					<input name="input" v-model="item.min" type="number" />
-					<text class=" text-lg text-gray" style="white-space: nowrap;">{{item.unit}}</text>
+		<view class="bg-white flex justify-center padding align-center" v-for="(item,i) in screenList" :key="i">
+			<template v-if="item.type=='input'">
+				<view class="flex-sub text-center">{{item.title}}</view>
+				<view class="flex-treble flex justify-between align-center">
+					<view class="flex-treble flex solid padding-tb-sm padding-lr-xs">
+						<input name="input" v-model="item.value1" type="digit" />
+						<text class=" text-lg text-gray" style="white-space: nowrap;">{{item.unit}}</text>
+					</view>
+					<text>-</text>
+					<view class="flex-treble flex solid padding-tb-sm padding-lr-xs">
+						<input name="input" v-model="item.value2" type="digit" />
+						<text class=" text-lg text-gray" style="white-space: nowrap;">{{item.unit}}</text>
+					</view>
 				</view>
-				<text>-</text>
-				<view class="flex-treble flex solid padding-tb-sm padding-lr-xs">
-					<input name="input" v-model="item.max" type="number" />
-					<text class=" text-lg text-gray" style="white-space: nowrap;">{{item.unit}}</text>
+			</template>
+			<template v-else-if="item.type=='picker'">
+				<view class="flex-sub text-center">{{item.title}}</view>
+				<picker class="flex-treble solid padding-tb-sm padding-lr-xs" @change="PickerChange($event,item)" :value="item.index" :range="item.value" range-key="text">
+					<view class="flex align-center" style="height: 50rpx;">
+						{{item.value[item.index].text}}<text class="cuIcon-triangledownfill" style="font-size: 48rpx;right: 0;position: absolute;"></text>
+					</view>
+				</picker>
+			</template>
+			<template v-else-if="item.type=='picker2'">
+				<view class="flex-sub text-center">{{item.title}}</view>
+				<view class="flex-treble flex justify-between align-center">
+					<block v-for="(son,iv) in item.value" :key="iv">
+						<view class="solid padding-tb-sm padding-lr-xl" :class="item.cur==son.text?'bg-green':''" @click="Change($event,item,iv)" :data-cur="son.text">{{son.text}}</view>
+					</block>
 				</view>
-			</view>
+			</template>
 		</view>
-
-		<view class="bg-white flex justify-center padding align-center">
-			<view class="flex-sub text-center">种植状态</view>
-			<picker class="flex-treble solid padding-tb-sm padding-lr-xs" @change="PickerChange" :value="index" :range="picker">
-				<view class="flex align-center" style="height: 50rpx;">
-					{{picker[index]}}<text class="cuIcon-triangledownfill" style="font-size: 48rpx;right: 0;position: absolute;"></text>
-				</view>
-			</picker>
+		<!-- 底部导航栏Tabbar -->
+		<view class="cu-tabbar-height"></view>
+		<view class="flex justify-around btBtn">
+			<view class="bg-green flex-sub text-center padding text-lg" @click="back">确定</view>
 		</view>
-		<view class="bg-white flex justify-center padding align-center">
-			<view class="flex-sub text-center">树冠</view>
-			<picker class="flex-treble solid padding-tb-sm padding-lr-xs" @change="PickerChange" :value="index" :range="picker">
-				<view class="flex align-center" style="height: 50rpx;">
-					{{picker[index]}}<text class="cuIcon-triangledownfill" style="font-size: 48rpx;right: 0;position: absolute;"></text>
-				</view>
-			</picker>
-		</view>
-		<view class="bg-white flex justify-center padding align-center">
-			<view class="flex-sub text-center">品质</view>
-			<picker class="flex-treble solid padding-tb-sm padding-lr-xs" @change="PickerChange" :value="index" :range="picker">
-				<view class="flex align-center" style="height: 50rpx;">
-					{{picker[index]}}<text class="cuIcon-triangledownfill" style="font-size: 48rpx;right: 0;position: absolute;"></text>
-				</view>
-			</picker>
-		</view>
-		<view class="bg-white flex justify-center padding align-center">
-			<view class="flex-sub text-center">土质</view>
-			<picker class="flex-treble solid padding-tb-sm padding-lr-xs" @change="PickerChange" :value="index" :range="picker">
-				<view class="flex align-center" style="height: 50rpx;">
-					{{picker[index]}}<text class="cuIcon-triangledownfill" style="font-size: 48rpx;right: 0;position: absolute;"></text>
-				</view>
-			</picker>
-		</view>
-		<view class="bg-white flex justify-center padding align-center">
-			<view class="flex-sub text-center">树形</view>
-			<picker class="flex-treble solid padding-tb-sm padding-lr-xs" @change="PickerChange" :value="index" :range="picker">
-				<view class="flex align-center" style="height: 50rpx;">
-					{{picker[index]}}<text class="cuIcon-triangledownfill" style="font-size: 48rpx;right: 0;position: absolute;"></text>
-				</view>
-			</picker>
-		</view>
-
-		<view class="bg-white flex justify-center padding align-center">
-			<view class="flex-sub text-center">分枝点</view>
-			<view class="flex-treble flex justify-between align-center">
-				<view class="flex-treble flex solid padding-tb-sm padding-lr-xs">
-					<input name="input" type="number" />
-					<text class=" text-lg text-gray" style="white-space: nowrap;">厘米</text>
-				</view>
-				<text>-</text>
-				<view class="flex-treble flex solid padding-tb-sm padding-lr-xs">
-					<input name="input" type="number" />
-					<text class=" text-lg text-gray" style="white-space: nowrap;">厘米</text>
-				</view>
-			</view>
-		</view>
-
-		<view class="bg-white flex justify-center padding align-center">
-			<view class="flex-sub text-center">茂密度</view>
-			<view class="flex-treble flex justify-between align-center">
-				<view class="solid padding-tb-sm padding-lr-xl" :class="Cur=='饱满'?'bg-green':''" @click="Change" data-cur="饱满">饱满</view>
-				<view class="solid padding-tb-sm padding-lr-xl" :class="Cur=='稀疏'?'bg-green':''" @click="Change" data-cur="稀疏">稀疏</view>
-				<view class="solid padding-tb-sm padding-lr-xl" :class="Cur=='偏冠'?'bg-green':''" @click="Change" data-cur="偏冠">偏冠</view>
-			</view>
-		</view>
-
-		<view class="bg-white flex justify-center padding align-center">
-			<view class="flex-sub text-center">苗木形态</view>
-			<picker class="flex-treble solid padding-tb-sm padding-lr-xs" @change="PickerChange" :value="index" :range="picker">
-				<view class="flex align-center" style="height: 50rpx;">
-					{{picker[index]}}<text class="cuIcon-triangledownfill" style="font-size: 48rpx;right: 0;position: absolute;"></text>
-				</view>
-			</picker>
-		</view>
-		<view class="bg-white flex justify-center padding align-center">
-			<view class="flex-sub text-center">土球直径</view>
-			<view class="flex-treble flex justify-between align-center">
-				<view class="flex-treble flex solid padding-tb-sm padding-lr-xs">
-					<input name="input" type="number" />
-					<text class=" text-lg text-gray" style="white-space: nowrap;">厘米</text>
-				</view>
-				<text>-</text>
-				<view class="flex-treble flex solid padding-tb-sm padding-lr-xs">
-					<input name="input" type="number" />
-					<text class=" text-lg text-gray" style="white-space: nowrap;">厘米</text>
-				</view>
-			</view>
-		</view>
-		<view class="bg-white flex justify-center padding align-center">
-			<view class="flex-sub text-center">土球厚度</view>
-			<view class="flex-treble flex justify-between align-center">
-				<view class="flex-treble flex solid padding-tb-sm padding-lr-xs">
-					<input name="input" type="number" />
-					<text class=" text-lg text-gray" style="white-space: nowrap;">厘米</text>
-				</view>
-				<text>-</text>
-				<view class="flex-treble flex solid padding-tb-sm padding-lr-xs">
-					<input name="input" type="number" />
-					<text class=" text-lg text-gray" style="white-space: nowrap;">厘米</text>
-				</view>
-			</view>
-		</view>
-		<view class="bg-white flex justify-center padding align-center">
-			<view class="flex-sub text-center">报价必填</view>
-			<view class="flex-treble flex justify-between align-center">
-				<view class="solid padding-tb-sm padding-lr" :class="BJCur=='必填价格'?'bg-green':''" @click="BJChange" data-cur="必填价格">必填价格</view>
-				<view class="solid padding-tb-sm padding-lr" :class="BJCur=='必填地址'?'bg-green':''" @click="BJChange" data-cur="必填地址">必填地址</view>
-				<view class="solid padding-tb-sm padding-lr" :class="BJCur=='必填图片'?'bg-green':''" @click="BJChange" data-cur="必填图片">必填图片</view>
-			</view>
-		</view>
-		<view class="bg-white flex justify-center padding align-center"  style="margin-bottom: 120rpx;">
-			<view class="flex-sub text-center">报价方式</view>
-			<view class="flex-treble flex justify-around align-center">
-				<view class="solid padding-tb-sm padding-lr-xl" :class="SCCur=='上车价'?'bg-green':''" @click="SCChange" data-cur="上车价">上车价</view>
-				<view class="solid padding-tb-sm padding-lr-xl" :class="SCCur=='到货价'?'bg-green':''" @click="SCChange" data-cur="到货价">到货价</view>
-			</view>
-		</view>
-		<button class="cu-btn bg-green logobtn " @tap="back">确认</button>
 	</view>
 </template>
 
 <script>
 	export default {
+		onLoad(e) {
+			if(e.screenList){
+				this.screenList=JSON.parse(decodeURIComponent(e.screenList));
+			}else{
+				this.getInfo()
+			}
+		},
 		data() {
 			return {
 				screenList: [{
 					title: '杆径',
-					min: '',
-					max: '',
+					type:'picker',
+					value1: 0,
+					value2: 0,
+					index:0,
+					value:''
+				},{
+					title: '*',
+					id:'',
+					type:'input',
+					value1: '',
+					value2: '',
 					unit: '公分'
-				}, {
+				},{
 					title: '高度',
-					min: '',
-					max: '',
+					id:'',
+					type:'input',
+					value1: '',
+					value2: '',
 					unit: '厘米'
-				}, {
+				},{
 					title: '冠幅',
-					min: '',
-					max: '',
+					id:'',
+					type:'input',
+					value1: '',
+					value2: '',
 					unit: '厘米'
-				}],
-				index: 0,
-				picker: ['请选择种植状态'],
+				},{
+					title: '种植状态',
+					id:'',
+					type:'picker',
+					value1: 0,
+					value2: 0,
+					index:0,
+					value:[]
+				},{
+					title: '树冠',
+					id:'',
+					type:'picker',
+					value1: 0,
+					value2: 0,
+					index:0,
+					value:[]
+				},{
+					title: '品质',
+					id:'',
+					type:'picker',
+					value1: 0,
+					value2: 0,
+					index:0,
+					value:[]
+				},{
+					title: '土质',
+					type:'picker',
+					id:'',
+					value1: 0,
+					value2: 0,
+					index:0,
+					value:[]
+				},{
+					title: '树形',
+					type:'picker',
+					id:'',
+					value1: 0,
+					value2: 0,
+					index:0,
+					value:[]
+				},{
+					title: '分枝点',
+					id:0,
+					type:'input',
+					value1: '',
+					value2: '',
+					unit: '厘米'
+				},{
+					title: '茂密度',
+					id:'',
+					type:'picker2',
+					value1: 0,
+					value2: 0,
+					cur:'',
+					value:[]
+				},{
+					title: '苗木形态',
+					id:'',
+					type:'picker',
+					value1: 0,
+					value2: 0,
+					index:0,
+					value:[]
+				},{
+					title: '土球直径',
+					id:0,
+					type:'input',
+					value1: '',
+					value2: '',
+					unit: '厘米'
+				},{
+					title: '土球厚度',
+					id:0,
+					type:'input',
+					value1: '',
+					value2: '',
+					unit: '厘米'
+				}/* ,{
+					title: '报价必填',
+					id:'',
+					type:'picker2',
+					value1: 0,
+					value2: 0,
+					cur:'',
+					value:[]
+				},{
+					title: '报价方式',
+					id:'',
+					type:'picker2',
+					value1: 0,
+					value2: 0,
+					cur:'',
+					value:[]
+				} */],
 				Cur: '',
-				BJCur:'',
-				SCCur:''
+				size:[],
+				
+				/* 'rodDiameter':'',
+				'height':'',
+				'crownWidth':'',
+				'plantingStatus':'',
+				'treeCrown':'',
+				'quality':'',
+				'soilQuality':'',
+				'treeShape':'',
+				'density':'',
+				'branch':'',
+				'nurseryForm':'',
+				'solidDiameter':'',
+				'solidThickness':'',
+				'quotationRequired':'',
+				'quotationMethod':'' */
 			}
 		},
 		methods: {
-			PickerChange(e) {
-				this.index = e.detail.value;
+			getInfo(){
+				this.http.post('supply/getOptions').then((res)=>{
+					if(res.code==1000){
+						this.screenList[0].value=res.data.rodDiameter;//杆径
+						this.screenList[4].value=res.data.plantingStatus;//种植状态
+						this.screenList[5].value=res.data.treeCrown;//树冠
+						this.screenList[6].value=res.data.quality;//品质
+						this.screenList[7].value=res.data.soilQuality;//土质
+						this.screenList[8].value=res.data.treeShape;//树形
+						this.screenList[10].value=res.data.density;//茂密度
+						this.screenList[11].value=res.data.nurseryForm;//苗木形态
+						/* this.screenList[14].value=res.data.quotationRequired;//报价必填
+						this.screenList[15].value=res.data.quotationMethod;//报价方式 */
+						
+						this.screenList[1].id=res.data.rodDiameter[0].id;
+						this.screenList[4].id=res.data.plantingStatus[0].id;
+						this.screenList[7].id=res.data.soilQuality[0].id;
+						this.screenList[8].id=res.data.treeShape[0].id;
+						/* this.screenList[10].id=res.data.density[0].id; */
+						this.screenList[11].id=res.data.nurseryForm[0].id;
+						
+						/* this.screenList[10].cur=res.data.density[0].text; */
+						/* this.screenList[14].cur=res.data.quotationRequired[0].text;
+						this.screenList[15].cur=res.data.quotationMethod[0].text; */
+						
+						console.log(this.screenList)
+						/* this.screenList[14].id=res.data.quotationRequired[0].id;
+						this.screenList[15].id=res.data.quotationMethod[0].id; */
+						this.screenList[5].id=res.data.treeCrown[0].id;
+						this.screenList[6].id=res.data.quality[0].id;
+					}
+				})
+			},
+			PickerChange(e,item) {
+				item.index = e.detail.value;
+				item.id=item.value[item.index].id;
+				console.log(this.screenList)
+				if(item.title=="杆径"){
+					this.screenList[1].id=item.value[item.index].id
+				}
 			},
 			/* 选择分枝点 */
-			Change(e) {
-				if (e.currentTarget.dataset.cur == this.Cur) {
-					this.Cur = '';
-				} else {
-					this.Cur = e.currentTarget.dataset.cur;
-				}
-			},
-			/* 报价必填 */
-			BJChange(e){
-				if (e.currentTarget.dataset.cur == this.BJCur) {
-					this.BJCur = '';
-				} else {
-					this.BJCur = e.currentTarget.dataset.cur;
-				}
-			},
-			/* 上车价 */
-			SCChange(e){
-				if (e.currentTarget.dataset.cur == this.SCCur) {
-					this.SCCur = '';
-				} else {
-					this.SCCur = e.currentTarget.dataset.cur;
-				}
+			Change(e,item,i) {
+				item.cur = e.currentTarget.dataset.cur;
+				item.id=item.value[i].id;
 			},
 			/* 点击确定 */
 			back() {
 				uni.$emit('QGScreenChange', {
-					screen: '5555555'
+					screenList: this.screenList
 				});
+				console.log(this.screenList)
 				uni.navigateBack({
 					delta: 1
 				});
-			},
-			/* 重置 */
-			reset() {
-
 			}
 		}
 	}
@@ -216,12 +263,12 @@
 		background-color: #FFFFFF;
 		height: 100vh;
 	}
-	.logobtn{
-		width: 100%;
-		height: 88upx;
+
+	.btBtn {
 		position: fixed;
-		bottom: 0upx;
-		border-radius: 0;
-		z-index: 999;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: 9999;
 	}
 </style>

@@ -1,7 +1,7 @@
 <template>
 	<view>
-		<home v-if="PageCur=='home'"></home>
-		<mine v-if="PageCur=='mine'"></mine>
+		<home v-show="PageCur=='home'"></home>
+		<mine v-show="PageCur=='mine'"></mine>
 		<!-- 底部弹窗 -->
 		<view class="cu-modal bottom-modal" @tap="hideModal" :class="modalName=='bottomModal'?'show':''">
 			<view class="cu-dialog">
@@ -49,12 +49,20 @@
 				tuiScrollTop
 		},
 		onLoad(e) {
-			if(e.toGYDT){
-				uni.pageScrollTo({
-					scrollTop:600,
-					duration:1000
-				})
+			if(e.mine){
+				this.PageCur='mine'
 			}
+		},
+		onPullDownRefresh() {
+			uni.$emit('onPullDownRefresh',{
+				onPullDownRefresh:true
+			});
+			setTimeout(()=>{uni.stopPullDownRefresh();},1000)
+		},
+		onReachBottom() {
+			uni.$emit('onReachBottom',{
+				onReachBottom:true
+			});
 		},
 		onPageScroll(e) {
 			this.scrollTop = e.scrollTop;

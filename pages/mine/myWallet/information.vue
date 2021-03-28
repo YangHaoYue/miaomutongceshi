@@ -40,7 +40,7 @@
 <script>
 	export default {
 		onLoad() {
-			/* this.getBankInfo(); */
+			this.getBankInfo();
 		},
 		data() {
 			return {
@@ -53,23 +53,14 @@
 		methods: {
 			//获取银行卡信息
 			getBankInfo(){
-				let token=uni.getStorageSync('token');
-				uni.request({
-					url: Url.websiteUrl+'user/getBankInfo',
-					method: 'POST',
-					header:{Authorization:'Bearer '+token},
-					data: {},
-					success: res => {
-						if(res.data.status_code==0){
-							this.name=res.data.data.name;
-							this.IDcard=res.data.data.id_card;
-							this.bankId=res.data.data.bank_no;
-							this.bankname=res.data.data.bank_name;
-						}
-					},
-					fail: () => {},
-					complete: () => {}
-				});
+				this.http.post('withdraw/getBankInfo').then((res)=>{
+					if(res.code==1000){
+						this.name=res.data.data.name;
+						this.IDcard=res.data.data.id_card;
+						this.bankId=res.data.data.bank_card;
+						this.bankname=res.data.data.bank_name;
+					}
+				})
 			},
 			submit(){
 				if(this.name==''||this.IDcard==''||this.bankId==''||this.bankname==''){
@@ -80,33 +71,17 @@
 					});
 					return;
 				}
-				let token=uni.getStorageSync('token');
-				uni.request({
-					url: Url.websiteUrl+'user/editBankInfo',
-					method: 'POST',
-					header:{Authorization:'Bearer '+token},
-					data: {
-						name:this.name,
-						id_card:this.IDcard,
-						bank_no:this.bankId,
-						bank_name:this.bankname//name 开户人 id_card 身份证 bank_no 卡号 bank_name 开户行
-					},
-					success: res => {
-						uni.showToast({
-							icon:'none',
-							title: res.data.message
-						});
-						if(res.data.status_code==0){
-							setTimeout(()=>{
-								uni.navigateBack({
-									delta: 1
-								});
-							},1500)
-						}
-					},
-					fail: () => {},
-					complete: () => {}
-				});
+				this.http.post('withdraw/updateBankInfo',{
+					name:this.name,
+					id_card:this.IDcard,
+					bank_card:this.bankId,
+					bank_name:this.bankname//name 开户人 id_card 身份证 bank_card 卡号 bank_name 开户行
+				}).then((res)=>{
+					if(res.code==1000){
+						this.http.toast(res.msg);
+						setTimeout(()=>{uni.navigateBack({delta: 1});},1000)
+					}
+				})
 			}
 		}
 	}

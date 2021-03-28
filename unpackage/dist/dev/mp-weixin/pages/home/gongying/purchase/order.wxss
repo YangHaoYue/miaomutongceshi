@@ -1,0 +1,39 @@
+
+page{
+	background-color: #FFFFFF;
+	height: 100vh;
+}
+.showMadol{
+	height: 497rpx;
+	width:100%;
+	position: fixed;
+	bottom: calc(120rpx + env(safe-area-inset-bottom) / 2);
+	z-index: 999;
+}
+.showMadol::after {
+	content: '';
+	position: absolute;
+	width: 0;
+	height: 0;
+	border-top: solid 6px #FFFFFF;
+	border-right: solid 6px transparent;
+	border-left: solid 6px transparent;
+	left: 50%;
+	bottom: -6px;
+	margin-left: -6px;
+}
+.btBtn {
+	position: fixed;
+	bottom: 20rpx;
+	left: 30rpx;
+	right: 30rpx;
+	z-index: 9999;
+}
+.cashBtn{
+	width: 650rpx;
+	height: 90rpx;
+	margin: 0 50rpx;
+	position: fixed;
+	bottom: 20rpx;
+}
+

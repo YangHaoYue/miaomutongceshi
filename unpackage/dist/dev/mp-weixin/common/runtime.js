@@ -105,11 +105,11 @@
 /******/
 /******/
 /******/ 		// mini-css-extract-plugin CSS loading
-/******/ 		var cssChunks = {"components/tui-scroll-top/tui-scroll-top":1,"components/uni-number-box/uni-number-box":1};
+/******/ 		var cssChunks = {"components/u-skeleton/u-skeleton":1,"components/tui-scroll-top/tui-scroll-top":1,"components/uni-number-box/uni-number-box":1,"components/tui-loadmore/tui-loadmore":1};
 /******/ 		if(installedCssChunks[chunkId]) promises.push(installedCssChunks[chunkId]);
 /******/ 		else if(installedCssChunks[chunkId] !== 0 && cssChunks[chunkId]) {
 /******/ 			promises.push(installedCssChunks[chunkId] = new Promise(function(resolve, reject) {
-/******/ 				var href = "" + ({"colorui/components/cu-custom":"colorui/components/cu-custom","components/tui-scroll-top/tui-scroll-top":"components/tui-scroll-top/tui-scroll-top","components/uni-number-box/uni-number-box":"components/uni-number-box/uni-number-box"}[chunkId]||chunkId) + ".wxss";
+/******/ 				var href = "" + ({"colorui/components/cu-custom":"colorui/components/cu-custom","components/u-skeleton/u-skeleton":"components/u-skeleton/u-skeleton","components/tui-scroll-top/tui-scroll-top":"components/tui-scroll-top/tui-scroll-top","components/uni-number-box/uni-number-box":"components/uni-number-box/uni-number-box","components/tui-loadmore/tui-loadmore":"components/tui-loadmore/tui-loadmore"}[chunkId]||chunkId) + ".wxss";
 /******/ 				var fullhref = __webpack_require__.p + href;
 /******/ 				var existingLinkTags = document.getElementsByTagName("link");
 /******/ 				for(var i = 0; i < existingLinkTags.length; i++) {
