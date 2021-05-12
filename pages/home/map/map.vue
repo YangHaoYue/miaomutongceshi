@@ -98,7 +98,7 @@
 			setTimeout(() => {
 				let winHeight = uni.getSystemInfoSync().windowHeight;
 				this.scrollH = winHeight - 74 - uni.upx2px(600);
-				this.mapHeight=winHeight-168;
+				this.mapHeight=winHeight-184;
 				this.getLocation();
 			}, 300)
 		},

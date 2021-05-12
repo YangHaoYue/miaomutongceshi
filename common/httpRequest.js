@@ -6,11 +6,11 @@
 const tui = {
 	//接口地址
 	interfaceUrl: function() {
-		return 'https://hmc.0831.run/api/v1/'
+		return 'https://www.zhgzx.cn/api/v1/'
 	},
 	//资源地址
 	resourceUrl:function(){
-		return 'https://rabbink-1253827710.cos.ap-chengdu.myqcloud.com/'
+		return 'http://hmc-1305134014.cos.ap-shanghai.myqcloud.com/'
 	},
 	toast: function(text, duration, success) {
 		uni.showToast({

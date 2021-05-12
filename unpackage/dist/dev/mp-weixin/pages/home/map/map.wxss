@@ -64,7 +64,8 @@ page {
 	display: -webkit-flex;
 	display: -webkit-box;
 	display: flex;
-	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	        box-sizing: border-box;
 	-webkit-box-align: center;
 	-webkit-align-items: center;
 	        align-items: center;
@@ -81,7 +82,8 @@ page {
 	-webkit-box-flex: 1;
 	-webkit-flex: auto;
 	flex: auto;
-	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	        border-radius: 5px;
 	background-color: #f0f0f0;
 }
 .search-bar-text {
@@ -94,7 +96,8 @@ page {
 	height: 30px;
 	padding-left: 10px;
 	padding-right: 30px;
-	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	        box-sizing: border-box;
 	display: -webkit-box;
 	display: -webkit-flex;
 	display: flex;
@@ -133,7 +136,8 @@ page {
 	left: 0;
 	top: 0;
 	z-index: 2;
-	border-radius: 3px;
+	-webkit-border-radius: 3px;
+	        border-radius: 3px;
 	text-align: center;
 	color: #9b9b9b;
 	background: #f0f0f0;

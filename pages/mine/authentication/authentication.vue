@@ -8,7 +8,8 @@
 				</view>
 				<view class="text-bold text-black text-center text-xl margin-top-sm">实名认证</view>
 				<view class="flex justify-center" style="margin: 10rpx auto;">
-					<button class="cu-btn bg-yellow round text-white" @tap="toShi">去认证</button>
+					<button class="cu-btn bg-yellow round text-white" v-if="person === 1">已认证</button>
+					<button class="cu-btn bg-yellow round text-white" v-else @tap="toShi">去认证</button>
 				</view>
 			</view>
 			<view class="padding-top-xl" style="border-radius: 25rpx;height: 348rpx;width: 304rpx;background-color: #F7F7F7;">
@@ -17,6 +18,7 @@
 				</view>
 				<view class="text-bold text-black text-center text-xl margin-top-sm">企业认证</view>
 				<view class="flex justify-center" style="margin: 10rpx auto;">
+					<button class="cu-btn bg-cyan round text-white" v-if="enterprise === 1">已认证</button>
 					<button class="cu-btn bg-cyan round text-white" @tap="toQi">去认证</button>
 				</view>
 			</view>

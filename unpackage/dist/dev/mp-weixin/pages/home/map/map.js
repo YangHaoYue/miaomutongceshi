@@ -253,7 +253,7 @@ var QQMapWX = __webpack_require__(/*! @/libs/qqmap-wx-jssdk.min.js */ 16);var _d
     setTimeout(function () {
       var winHeight = uni.getSystemInfoSync().windowHeight;
       _this.scrollH = winHeight - 74 - uni.upx2px(600);
-      _this.mapHeight = winHeight - 168;
+      _this.mapHeight = winHeight - 184;
       _this.getLocation();
     }, 300);
   },

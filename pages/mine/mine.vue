@@ -8,7 +8,7 @@
 					<image class="cu-avatar round lg" :src="avatarUrl"></image>
 				</view>
 				<view class="margin-left-sm text-white" v-if="http.isLogin()">{{nick_name}}</view>
-				<button class="cu-btn round line-green margin-left-sm text-white" v-else open-type="getUserInfo" @getuserinfo="getUserInfo">请登录</button>
+				<button class="cu-btn round line-green margin-left-sm text-white" v-else open-type="getUserInfo" @click="getUserInfo">请登录</button>
 			</view>
 			<navigator hover-class='none' url="/pages/mine/myStore/myStore" navigateTo>
 				<view style="width: 70rpx;height: 70rpx;margin: auto;">
@@ -21,9 +21,10 @@
 		<view class="margin flex justify-between bg-white align-center padding-lr-sm padding-tb radius">
 			<view>
 				<view class="text-bold text-black margin-bottom-xs text-lg">认证信息</view>
-				<view class="text-grey text-sm">点亮更多图标，增加诚信值，获得更多生意机会</view>
+				<view class="text-grey text-sm" v-if="enterprise_auth === 1 && person_auth === 1">恭喜您已经完成认证</view>
+				<view class="text-grey text-sm" v-else>点亮更多图标，增加诚信值，获得更多生意机会</view>
 			</view>
-			<navigator hover-class='none' url="/pages/mine/authentication/authentication" navigateTo>
+			<navigator hover-class='none' url="/pages/mine/authentication/authentication" navigateTo v-if="enterprise_auth != 1 || person_auth != 1">
 				<button class="cu-btn round bg-green sm" style="white-space: nowrap;">前往认证<text class="cuIcon-right"></text></button>
 			</navigator>
 		</view>
@@ -68,7 +69,7 @@
 			this.getphoneNumber();
 			if(this.http.isLogin()){
 				this.login()
-				/* this.getNomalUserInfo() */
+				this.getNomalUserInfo()
 			}
 		},
 		data() {
@@ -100,15 +101,23 @@
 					title:'我的收藏',
 					img:'../../static/mine/shoucang.png',
 					url:'/pages/mine/myCollection/myCollection'
-				}]
+				}],
+				//认证信息
+				person_auth:"",
+				enterprise_auth:""
 			}
 		},
 		methods: {
 			getUserInfo(e){
-				if(e.detail.userInfo){
-					//用户按了允许授权按钮
-					this.login(e)
-				}
+				wx.getUserProfile({
+				     desc: '用于完善会员资料', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
+				     success: (res) => {
+						 if(res.userInfo){
+						 	//用户按了允许授权按钮
+							this.login(res)
+						 }
+				     }
+				   })
 			},
 			login(e){
 				uni.login({
@@ -116,11 +125,11 @@
 					success: (res) => {
 						this.http.post('user/wxLogin',{
 							code:res.code,
-							avatar:uni.getStorageSync('personImg')||e.detail.userInfo.avatarUrl,
-							name:uni.getStorageSync('nickName')||e.detail.userInfo.nickName
+							avatar:uni.getStorageSync('personImg')||e.userInfo.avatarUrl,
+							name:uni.getStorageSync('nickName')||e.userInfo.nickName
 						}).then((res)=>{
 							if(res.code==1000){
-								this.http.setUserInfo(res.data.token,uni.getStorageSync('personImg')||e.detail.userInfo.avatarUrl,uni.getStorageSync('nickName')||e.detail.userInfo.nickName);
+								this.http.setUserInfo(res.data.token,uni.getStorageSync('personImg')||e.userInfo.avatarUrl,uni.getStorageSync('nickName')||e.userInfo.nickName);
 								this.nick_name=uni.getStorageSync('nickName');
 								this.avatarUrl=uni.getStorageSync('personImg');
 							}
@@ -130,9 +139,12 @@
 					}
 				})
 			},
+			//获取用户是否认证的信息
 			getNomalUserInfo(){
 				this.http.get('user/getUserInfo').then((res)=>{
-					
+					this.person_auth=res.data.person_auth;
+					this.enterprise_auth=res.data.enterprise_auth;
+					console.log(this.person_auth);
 				})
 			},
 			getphoneNumber(){

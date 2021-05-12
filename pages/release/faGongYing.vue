@@ -11,7 +11,7 @@
 				<input class="flex-treble" style="font-size: 32rpx;" v-if="screenList.length==0" disabled="true" @tap="toGuiGe" placeholder="请选择货品规格" name="input"/>
 				<view class="flex-treble flex align-center" style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;" v-else @tap="toGuiGe">
 					<text style="font-size: 32rpx;" v-for="(item,id) in screenList" :key="id" v-if="item.type=='input'&&id<3">{{item.title}}:{{item.value1}}-{{item.value2}}</text>
-					<text style="font-size: 32rpx;" v-for="(item,id) in screenList" :key="id" v-if="item.type=='picker'&&id<3">{{item.title}}:{{item.value[item.index].text}}</text>
+					<text style="font-size: 32rpx;" v-for="(item,i) in screenList" :key="i" v-if="item.type=='picker'&&id<3">{{item.title}}:{{item.value[item.index].text}}</text>
 				</view>
 			</view>
 			<view class="flex align-center">

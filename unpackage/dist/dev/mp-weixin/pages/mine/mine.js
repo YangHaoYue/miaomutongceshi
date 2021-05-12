@@ -187,13 +187,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 var _default =
 {
   created: function created() {
     this.getphoneNumber();
     if (this.http.isLogin()) {
       this.login();
-      /* this.getNomalUserInfo() */
+      this.getNomalUserInfo();
     }
   },
   data: function data() {
@@ -224,30 +225,38 @@ var _default =
       {
         title: '我的收藏',
         img: '../../static/mine/shoucang.png',
-        url: '/pages/mine/myCollection/myCollection' }] };
+        url: '/pages/mine/myCollection/myCollection' }],
 
+      //认证信息
+      person_auth: "",
+      enterprise_auth: "" };
 
   },
   methods: {
-    getUserInfo: function getUserInfo(e) {
-      if (e.detail.userInfo) {
-        //用户按了允许授权按钮
-        this.login(e);
-      }
+    getUserInfo: function getUserInfo(e) {var _this = this;
+      wx.getUserProfile({
+        desc: '用于完善会员资料', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
+        success: function success(res) {
+          if (res.userInfo) {
+            //用户按了允许授权按钮
+            _this.login(res);
+          }
+        } });
+
     },
-    login: function login(e) {var _this = this;
+    login: function login(e) {var _this2 = this;
       uni.login({
         provider: 'weixin',
         success: function success(res) {
-          _this.http.post('user/wxLogin', {
+          _this2.http.post('user/wxLogin', {
             code: res.code,
-            avatar: uni.getStorageSync('personImg') || e.detail.userInfo.avatarUrl,
-            name: uni.getStorageSync('nickName') || e.detail.userInfo.nickName }).
+            avatar: uni.getStorageSync('personImg') || e.userInfo.avatarUrl,
+            name: uni.getStorageSync('nickName') || e.userInfo.nickName }).
           then(function (res) {
             if (res.code == 1000) {
-              _this.http.setUserInfo(res.data.token, uni.getStorageSync('personImg') || e.detail.userInfo.avatarUrl, uni.getStorageSync('nickName') || e.detail.userInfo.nickName);
-              _this.nick_name = uni.getStorageSync('nickName');
-              _this.avatarUrl = uni.getStorageSync('personImg');
+              _this2.http.setUserInfo(res.data.token, uni.getStorageSync('personImg') || e.userInfo.avatarUrl, uni.getStorageSync('nickName') || e.userInfo.nickName);
+              _this2.nick_name = uni.getStorageSync('nickName');
+              _this2.avatarUrl = uni.getStorageSync('personImg');
             }
           }).catch(function (rej) {
             console.log(rej);
@@ -255,14 +264,17 @@ var _default =
         } });
 
     },
-    getNomalUserInfo: function getNomalUserInfo() {
+    //获取用户是否认证的信息
+    getNomalUserInfo: function getNomalUserInfo() {var _this3 = this;
       this.http.get('user/getUserInfo').then(function (res) {
-
+        _this3.person_auth = res.data.person_auth;
+        _this3.enterprise_auth = res.data.enterprise_auth;
+        console.log(_this3.person_auth);
       });
     },
-    getphoneNumber: function getphoneNumber() {var _this2 = this;
+    getphoneNumber: function getphoneNumber() {var _this4 = this;
       this.http.get('user/getSystemInfo').then(function (res) {
-        _this2.phone = res.data.service_mobile;
+        _this4.phone = res.data.service_mobile;
       });
     },
     makePhoneCall: function makePhoneCall() {

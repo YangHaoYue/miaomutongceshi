@@ -6,7 +6,7 @@
 		</view>
 		<view class="text-black text-bold text-xxl text-center">认证成功!</view>
 		<view class="text-gray text-lg text-center">恭喜您!</view>
-		<view class="text-gray text-lg text-center">您已完成实名认证，可返回查看。</view>
+		<view class="text-gray text-lg text-center">您已完成认证，可返回查看。</view>
 		<button class="cu-btn bg-green logobtn round" @tap="back">完成</button>
 	</view>
 </template>

@@ -53,7 +53,7 @@
 					<view class="text-black text-lg">
 						<view class="text-cut">{{detail.store.store_name}}
 						<text v-if="detail.store.enterprise_auth==1" class="bg-blue margin-right-xs radius margin-left-sm">企</text>
-						<text v-if="detail.store.person_auth==1" class="bg-blue margin-right-xs radius margin-left-sm">实</text>
+						<text v-if="detail.store.person_auth==1" class="bg-green margin-right-xs radius margin-left-sm">实</text>
 					</view>
 					</view>
 					<view class="text-gray text-sm flex"> <view class="text-cut">持续经营{{detail.store.day}}</view></view>
@@ -186,8 +186,10 @@
 					supply_id:this.supply_id
 				}).then((res)=>{
 					this.http.toast(res.msg)
-					if(res.code=1000){
+					if(res.code=1000 && this.detail.is_favorite === 0){
 						this.detail.is_favorite=1;
+					}else{
+						this.detail.is_favorite=0;
 					}
 				})
 			},

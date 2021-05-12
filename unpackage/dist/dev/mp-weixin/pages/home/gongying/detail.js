@@ -354,8 +354,10 @@ var _default =
         supply_id: this.supply_id }).
       then(function (res) {
         _this2.http.toast(res.msg);
-        if (res.code = 1000) {
+        if (res.code =  true && _this2.detail.is_favorite === 0) {
           _this2.detail.is_favorite = 1;
+        } else {
+          _this2.detail.is_favorite = 0;
         }
       });
     },

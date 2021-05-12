@@ -38,21 +38,24 @@ page {
 .personCamera {
   width: 536rpx;
   height: 346rpx;
-  border-radius: 15rpx;
+  -webkit-border-radius: 15rpx;
+          border-radius: 15rpx;
   border: 1rpx solid #DDDDDD;
   margin: auto 13rpx;
 }
 .personCamera image {
   width: 536rpx;
   height: 346rpx;
-  border-radius: 15rpx;
+  -webkit-border-radius: 15rpx;
+          border-radius: 15rpx;
   border: 1rpx solid #DDDDDD;
 }
 .personCamera .cu-tag {
   position: relative;
   bottom: 70rpx;
   left: 80%;
-  border-radius: 15rpx;
+  -webkit-border-radius: 15rpx;
+          border-radius: 15rpx;
 }
 .personCamera .img {
   width: 536rpx;
